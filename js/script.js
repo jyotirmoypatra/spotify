@@ -96,3 +96,12 @@ var slice = [].slice;
     }
   });
 })(window.jQuery, window);
+
+
+
+function clearsong(){
+  $('#addsongform input[type="text"]').val('');
+  $('#addsongform input[type="file"]').val('');
+  $('#artistselect').empty();
+				
+}

@@ -2,6 +2,63 @@
     width: 110px;
 }
 
+.loginbtn a{
+    padding: 10px;
+    background: #70777c;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white ;
+    margin-left: 10px;
+}
+.loginbtn button{
+    background: green;
+    margin-top: 15px;
+    color: white;
+}
+.addsongbtn a{
+    text-decoration: none;
+    background-color:#70777c;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;
+}
+.songinput{
+    padding: 10px;
+}
+.multipleSelection {
+    width: 300px;
+    background-color: #BCC2C1;
+}
+
+.selectBox {
+    position: relative;
+}
+
+.selectBox select {
+    width: 100%;
+    font-weight: bold;
+}
+
+.overSelect {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#checkBoxes {
+    display: none;
+    border: 1px #8DF5E4 solid;
+}
+
+#checkBoxes label {
+    display: block;
+}
+
+#checkBoxes label:hover {
+    background-color: #4F615E;
+}
 .starrr {
     display: inline-block; }
     .starrr a {
