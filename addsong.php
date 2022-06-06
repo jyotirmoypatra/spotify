@@ -14,6 +14,8 @@ session_start();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
     <script src="js/script.js"></script>
     <link rel="stylesheet" type="text/css" href="style/style.css">
@@ -63,6 +65,8 @@ session_start();
         </div>
     </nav>
 
+    <?php
+    if(isset($_SESSION['username'])){ ?>
     <div class="container-fluid mt-3">
         <h2>Adding a new song</h2>
         <form id="addsongform" action="">
@@ -130,7 +134,14 @@ session_start();
         </form>
     </div>
 
+    <?php }else{?>
 
+    <div class="container text-center mt-5">
+        <h2 style="color:#fc9803;">Please Login your Account before add any songs !!</h2>
+        <a href="login.php">Login</a>
+    </div>
+
+    <?php } ?>
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -147,21 +158,24 @@ session_start();
                     <form action="">
                         <div class="songinput">
                             <label for="">Artist Name</label>
-                            <input type="text" name="artistname"> </br>
+                            <input type="text" id="artistname" name="artistname"> </br>
                         </div>
                         <div class="songinput">
                             <label for="">Date of Birth</label>
-                            <input type="date" name="dob"></br>
+                            <input type="date" id="dob" name="dob"></br>
                         </div>
-                        
+
                         <div class="songinput">
                             <label for="">Bio</label>
-                            <textarea name="bio" rows="5" cols="50"></textarea>
+                            <textarea name="bio" id="bio" rows="5" cols="50"></textarea>
+                        </div>
+                        <div class="songinput text-center">
+                            <button id="createartist" type="submit" style="background-color: #7bfd8b;font-weight:bold;" name="createartist" class="btn ">Save</button>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button"  class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                 </div>
             </div>
@@ -186,6 +200,48 @@ session_start();
             show = true;
         }
     }
+    </script>
+    <script>
+    $(document).ready(function() {
+
+        jQuery("#createartist").on('click',function(e) {
+           e.preventDefault();
+            var artistname = jQuery("#artistname").val();
+            var dob = jQuery("#dob").val();
+            var bio = jQuery("#bio").val();
+          
+
+            if (artistname == '' || dob == '' || bio == '' ) {
+                alert("Please fill all the Artist Details.");
+                return false;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "addartist.php",
+                data: {
+                    artistname: artistname,
+                    dob: dob,
+                    bio: bio
+                    
+                },
+                
+                success: function(data) {
+                    alert(data);
+                    $('#artistname').val('');
+                    $('#dob').val('');
+                    $('#bio').val('');
+                    
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+
+        });
+
+    });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
         integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous">

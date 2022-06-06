@@ -33,6 +33,9 @@ session_start();
                     <li class="nav-item">
                         <a class="nav-link active" href="index.php">HOME</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="allsongs.php">All Songs</a>
+                    </li>
 
                 </ul>
                 <div class="formdiv container-fluid col-lg-4">
