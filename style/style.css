@@ -1,0 +1,12 @@
+.table td img{
+    width: 110px;
+}
+
+.starrr {
+    display: inline-block; }
+    .starrr a {
+      font-size: 25px;
+      padding: 0 1px;
+      cursor: pointer;
+      color: #FFD119;
+      text-decoration: none; }
