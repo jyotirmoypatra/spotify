@@ -102,23 +102,7 @@ session_start();
                 </div>
 
                 <div id="checkBoxes">
-                    <label for="first">
-                        <input type="checkbox" id="first" />
-                        checkBox1
-                    </label>
-
-                    <label for="second">
-                        <input type="checkbox" id="second" />
-                        checkBox2
-                    </label>
-                    <label for="third">
-                        <input type="checkbox" id="third" />
-                        checkBox3
-                    </label>
-                    <label for="fourth">
-                        <input type="checkbox" id="fourth" />
-                        checkBox4
-                    </label>
+                    
                 </div>
             </div>
             <button style="margin-top: 5px;margin-left:12px;" type="button" class="btn btn-secondary"
@@ -143,7 +127,7 @@ session_start();
 
     <?php } ?>
 
-    <!-- Modal -->
+<!--artist Modal start-->
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -182,13 +166,14 @@ session_start();
         </div>
     </div>
 
-
+<!--artist Modal end-->
 
 
     <script>
     var show = true;
 
     function showCheckboxes() {
+      
         var checkboxes =
             document.getElementById("checkBoxes");
 
@@ -199,10 +184,47 @@ session_start();
             checkboxes.style.display = "none";
             show = true;
         }
+        
+        
+
+
+
+
     }
+
+    
     </script>
     <script>
     $(document).ready(function() {
+      //fetch artist in dropdown ajax
+        jQuery(".selectBox").on('click',function(e) {
+           e.preventDefault();
+           $.ajax({
+                type: "POST",
+                url: "artistdropdown.php",
+                data: {
+                  
+                    
+                },
+                
+                success: function(data) {
+                   // alert(data);
+                    $('#checkBoxes').html(data);
+                   
+                    
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+
+        });
+        //fetch artist in dropdown ajax end
+
+
+
+        //add artist ajax start
 
         jQuery("#createartist").on('click',function(e) {
            e.preventDefault();
@@ -240,6 +262,7 @@ session_start();
             });
 
         });
+        //add artist ajax end
 
     });
     </script>
