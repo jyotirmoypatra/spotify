@@ -69,28 +69,28 @@ session_start();
     if(isset($_SESSION['username'])){ ?>
     <div class="container-fluid mt-3">
         <h2>Adding a new song</h2>
-        <form id="addsongform" action="">
+        <form id="addsongform" method="POST" action="" enctype="multipart/form-data">
             <div class="songinput">
                 <label for="">Song Name</label>
                 <input type="text" name="songname"> </br>
             </div>
             <div class="songinput">
                 <label for="">Date Released</label>
-                <input type="text" name="daterelease"></br>
+                <input type="DATE" name="daterelease"></br>
             </div>
             <div class="songinput">
                 <label for="">Artwork</label>
                 <input type="file" name="artimage"></br>
             </div>
             <div class="songinput" style="float: left;">
-                <label for="cars">Artists</label>
-                <!-- <select name="cars" id="artistselect">
+                <!-- <label for="cars">Artists</label>
+                <select name="cars" id="artistselect">
                     <option value="kk">Select Artists</option>
                     <option value="abc">abc</option>
                     <option value="nbn">nbn</option>
                     <option value="audi">Audi</option>
-                </select>
-                 -->
+                </select> -->
+                
             </div>
             <div class="multipleSelection" style="float: left;margin-top:12px;">
                 <div class="selectBox" onclick="showCheckboxes()">
@@ -112,7 +112,7 @@ session_start();
             <div class="btns mt-4" style="clear: both;">
 
                 <button onclick="clearsong();">Cancel</button>
-                <button type="submit">Save</button>
+                <button type="submit" name="savesong">Save</button>
             </div>
 
         </form>
@@ -272,3 +272,61 @@ session_start();
 </body>
 
 </html>
+
+
+
+
+<?php
+
+include "db.php";
+
+if(isset($_POST['savesong'])  ){
+
+    if(isset($_POST['daterelease']) && isset($_POST['selectartist'])) 
+    {
+    
+    $songname =mysqli_real_escape_string($con, $_POST['songname']);
+    $daterelease =mysqli_real_escape_string( $con,$_POST['daterelease']);
+    $imageName =mysqli_real_escape_string( $con,$_FILES["artimage"]["name"]);
+    $imageData =mysqli_real_escape_string($con,file_get_contents($_FILES["artimage"]["tmp_name"]));
+
+    $artist = $_POST['selectartist'];
+    $artist_srt=implode(",",$artist);
+
+  //  echo $artist_srt;
+
+   $current_user=$_SESSION['username'];
+  // echo $current_user;
+     $current_user_query="select userid from users where username='$current_user'";
+     $user_query=mysqli_query($con,$current_user_query);
+     $user_count=mysqli_num_rows($user_query);
+     if($user_count)
+    {
+      $user_fetch= mysqli_fetch_assoc($user_query);
+      $current_user_id=$user_fetch['userid'];
+      $avgrating=0;
+    
+     $song_insert_query= "insert into songs (songname,releasedate,artwork,artists,userid,avgrating,artworkname) 
+    values('$songname','$daterelease','$imageData','$artist_srt','$current_user_id','$avgrating','$imageName')";
+   // $song_query=mysqli_query($con,$song_insert_query);
+    //$song_count=mysqli_num_rows($song_query);
+    if(mysqli_query($con,$song_insert_query)){  
+        ?>
+
+     <script>alert("Song added successfully");</script>
+      <?php
+        
+    }else{
+        ?>
+
+        <script>alert("Song added Failed!!!!!!!");</script>
+         <?php
+
+    }
+
+    }
+ }else{ ?>
+ <script>alert("Please add all song details!!");</script>
+<?php }
+}
+  
