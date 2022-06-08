@@ -13,8 +13,10 @@ session_start();
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
     <script src="js/script.js"></script>
     <link rel="stylesheet" type="text/css" href="style/style.css">
 
@@ -76,7 +78,19 @@ session_start();
         </div>
     </div>
     <div class="container-fluid  mt-3">
-
+    <?php
+    require_once "db.php";
+$uname=$_SESSION['username'];
+$user_select_query="select userid from users where username='$uname'";
+$userquery=mysqli_query($con,$user_select_query);
+$count_user=mysqli_num_rows($userquery);
+if($count_user)
+{
+ $fetch_user= mysqli_fetch_assoc($userquery);
+ $user_id=$fetch_user['userid'];
+ //echo $user_id;
+}
+    ?>
 
         <table class="table">
             <thead class="table-dark">
@@ -89,33 +103,32 @@ session_start();
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td><img src="img1.jpg" alt=""></td>
-                    <td>Tu Jo Mila</td>
-                    <td>05 June,2015</td>
-                    <td>KK</td>
+            <?php
+                include 'db.php';
+                $songquery="select * from songs ORDER BY avgrating DESC LIMIT 10";
+                $song_fetch_query = mysqli_query($con,$songquery);
+                while( $result= mysqli_fetch_assoc($song_fetch_query)){
+                ?>
+                 <tr>
+                    <td><?php echo '<img src="data:image/jpeg;base64,'.base64_encode($result['artwork']).'"/>' ?></td>
+                    <td><?php  echo $result['songname'];  ?></td>
+                    <td><?php  echo $result['releasedate'];  ?></td>
+                    <td><?php  echo $result['artists'];  ?></td>
                     <td>
-                        <div class='starrr'></div>
+                        <!-- <div class='starrr'></div> -->
+                        <!-- <div id="rateYo"></div>
+                        <div class="counter"></div> -->
+                    <div>
+                    <div class="rateyo" data-user="<?php echo $user_id; ?>" data-value="<?php  echo $result['songid'];  ?>"
+                    data-rateyo-rating="<?php  echo $result['avgrating'];  ?>"
+                    data-rateyo-num-stars="5"
+                    ></div>
+                    <!-- <span class='score'>0</span> -->
+                   <span>rating</span> <span class='result'><?php  echo $result['avgrating'];  ?></span>
+                    </div>
                     </td>
                 </tr>
-                <tr>
-                    <td><img src="img1.jpg" alt=""></td>
-                    <td>Tu Jo Mila</td>
-                    <td>05 June,2015</td>
-                    <td>KK</td>
-                    <td>
-                        <div class='starrr'></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td><img src="img1.jpg" alt=""></td>
-                    <td>Tu Jo Mila</td>
-                    <td>05 June,2015</td>
-                    <td>KK</td>
-                    <td>
-                        <div class='starrr'></div>
-                    </td>
-                </tr>
+                <?php  } ?>
 
             </tbody>
         </table>
@@ -163,18 +176,72 @@ session_start();
     </div>
 
 
+    <script>
+    // $(function() {
+    //     $(".starrr").starrr();
+    // });
 
+
+    $(function () {
+ 
+ $("#rateYo").rateYo({
+
+   onChange: function (rating, rateYoInstance) {
+
+     $(this).next().text(rating);
+   }
+ });
+});
+
+$(function () {
+  $(".rateyo").rateYo().on("rateyo.change", function (e, data) {
+    var rating = data.rating;
+   // $(this).parent().find('.score').text('score :'+ $(this).attr('data-rateyo-score'));
+    $(this).parent().find('.result').text( rating);
+
+    var songid= $(this).data("value");
+    console.log("ratng="+rating,"songid="+songid);
+   var uid=$(this).data("user");
+    //ajax to add rating
+
+    $.ajax({
+                type: "POST",
+                url: "rating.php",
+                data: {
+                  songid:songid,
+                  rating:rating,
+                  current_user:uid
+                    
+                },
+                
+                success: function(data) {
+                   console.log(data);
+                    //$('#checkBoxes').html(data);
+                   
+
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr);
+                }
+            });
+    //ajax to add rating end
+
+
+
+   });
+});
+    </script>
     
 
 
-    <script>
+    <!-- <script>
     $(function() {
         $(".starrr").starrr();
     });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
+    </script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js"
         integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous">
-    </script>
+    </script> -->
 </body>
 
 </html>

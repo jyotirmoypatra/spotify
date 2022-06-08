@@ -83,8 +83,8 @@ session_start();
                 <input type="file" name="artimage"></br>
             </div>
             <div class="songinput" style="float: left;">
-                <!-- <label for="cars">Artists</label>
-                <select name="cars" id="artistselect">
+                <label for="cars">Artists</label>
+                <!-- <select name="cars" id="artistselect">
                     <option value="kk">Select Artists</option>
                     <option value="abc">abc</option>
                     <option value="nbn">nbn</option>
