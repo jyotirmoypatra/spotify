@@ -79,6 +79,7 @@ session_start();
     </div>
     <div class="container-fluid  mt-3">
     <?php
+    if(isset($_SESSION['username'])){
     require_once "db.php";
 $uname=$_SESSION['username'];
 $user_select_query="select userid from users where username='$uname'";
@@ -90,6 +91,7 @@ if($count_user)
  $user_id=$fetch_user['userid'];
  //echo $user_id;
 }
+    }
     ?>
 
         <table class="table">
@@ -133,7 +135,31 @@ if($count_user)
             </tbody>
         </table>
     </div>
+<?php
+ require_once "db.php";
+ $top_artist="select artists from songs ORDER BY avgrating DESC LIMIT 10 ";
+ $fetch_top_artist_query = mysqli_query($con,$top_artist);
+ $full_artist_array=[];
+                while( $artist_result= mysqli_fetch_assoc($fetch_top_artist_query)){
+      $comma=", ";
+                    if(strpos($artist_result['artists'],$comma)!==false){
+                       
+                        $artist_array=explode(', ',$artist_result['artists']);
+                        foreach($artist_array as $arts){
+                            $full_artist_array[]=$arts;
+                        }
+                      
+                    }else{
+                        $full_artist_array[]=$artist_result['artists'];
+                    }
 
+    ?>
+
+    <?php  }   
+    $unique=array_unique($full_artist_array);
+    //print_r($unique);
+    
+    ?>
     <div class="container-fluid topartist mt-5">
         <h2>Top 10 Artists</h2>
 
@@ -146,30 +172,31 @@ if($count_user)
                 </tr>
             </thead>
             <tbody>
+                <?php
+               require_once "db.php";
+                 foreach($unique as $unq){
+                     $trim=ltrim($unq);
+                     $artist_dtls="select * from artist where name='$trim'";
+                     $fetch_uuq_artist=mysqli_query($con,$artist_dtls);
+                     while( $artist_unq_result= mysqli_fetch_assoc($fetch_uuq_artist)){
+                 
+               ?>
                 <tr>
-                    <td>KK</td>
-                    <td>23 August 1968</td>
-                    <td>Tu Jo Mila,Tu Jo Mila,Tu Jo Mila,Tu Jo Mila</td>
+                    <td><?php  echo $artist_unq_result['name'];  ?></td>
+                    <td><?php  echo $artist_unq_result['dob'];  ?></td>
+                    <td>
+                   <?php
+                     $song_query="select * from songs where artists like '%$trim%'";
+                     $song_fetch_query=mysqli_query($con,$song_query);
+                     while( $song_result= mysqli_fetch_assoc($song_fetch_query)){
+                     echo $song_result['songname'].',';
+                     }
+                     ?>
+                    </td>
 
                 </tr>
-                <tr>
-                    <td>KK</td>
-                    <td>23 August 1968</td>
-                    <td>Tu Jo Mila,Tu Jo Mila,Tu Jo Mila,Tu Jo Mila</td>
-
-                </tr>
-                <tr>
-                    <td>KK</td>
-                    <td>23 August 1968</td>
-                    <td>Tu Jo Mila,Tu Jo Mila,Tu Jo Mila,Tu Jo Mila</td>
-
-                </tr>
-                <tr>
-                    <td>KK</td>
-                    <td>23 August 1968</td>
-                    <td>Tu Jo Mila,Tu Jo Mila,Tu Jo Mila,Tu Jo Mila</td>
-
-                </tr>
+                <?php }} ?>
+            
 
             </tbody>
         </table>
